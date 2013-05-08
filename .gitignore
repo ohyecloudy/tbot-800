@@ -5,3 +5,6 @@ pom.xml
 /target/
 /targets/
 .lein-deps-sum
+.lein-failures
+.lein-repl-history
+
