@@ -5,17 +5,25 @@
     [twitter.callbacks.handlers]
     [twitter.api.restful]))
 
-(defn load-config [n]
-  (with-open [r (clojure.java.io/reader n)]
-    (read (java.io.PushbackReader. r))))
-
 (def my-creds 
-  (let [config (load-config "config.clj")]
+  (let [config (load-file "config.clj")]
     (make-oauth-creds (config :app-consumer-key)
                       (config :app-consumer-secret)
                       (config :user-access-token)
                       (config :user-access-token-secret))))
 
-(statuses-update :oauth-creds my-creds
-                 :params {:status "Hello, Twitter!"})
+(def quotes (load-file "resources/quotes.clj"))
 
+(defn add-verify-msg [x]
+  (let [twit-length-limit 140]
+    (->> x
+         (map #(if (< (count %) twit-length-limit) 
+                 [% nil]
+                 [% (str (count %) "로 " twit-length-limit "자를 넘습니다")])))))
+
+(def quotes (add-verify-msg quotes))
+
+; 검증에 실패한 인용구는 로그로 남기고 깨끗한 녀석들만 후보로 올린다.
+
+; (statuses-update :oauth-creds my-creds
+;                  :params {:status "Hello, Twitter!"})
