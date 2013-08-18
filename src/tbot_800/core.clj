@@ -12,18 +12,12 @@
                       (config :user-access-token)
                       (config :user-access-token-secret))))
 
-(def quotes (load-file "resources/quotes.clj"))
+(def quotes
+  (filter (fn [q] (let [twit-length-limit 140]
+                    (<= (count q) twit-length-limit)))
+          (load-file "resources/quotes.clj")))
 
-(defn add-verify-msg [x]
-  (let [twit-length-limit 140]
-    (->> x
-         (map #(if (< (count %) twit-length-limit) 
-                 [% nil]
-                 [% (str (count %) "로 " twit-length-limit "자를 넘습니다")])))))
+(defn tweet-random-quote []
+  (statuses-update :oauth-creds my-creds
+                   :params {:status (rand-nth quotes)}))
 
-(def quotes (add-verify-msg quotes))
-
-; 검증에 실패한 인용구는 로그로 남기고 깨끗한 녀석들만 후보로 올린다.
-
-; (statuses-update :oauth-creds my-creds
-;                  :params {:status "Hello, Twitter!"})
