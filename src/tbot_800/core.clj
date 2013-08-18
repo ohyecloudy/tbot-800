@@ -14,13 +14,20 @@
                       (config :user-access-token)
                       (config :user-access-token-secret))))
 
-(def tweet-time-interval
-  (:tweet-interval-ms (load-file "config.clj")))
+(defn flatten-book-quote [q]
+  (mapcat
+   (fn [quote-group]
+     (let [postfix (str "{" (:source quote-group) "}")]
+       (map #(str % " " postfix) (:quotes quote-group))))
+   q))
 
 (def quotes
   (filter (fn [q] (let [twit-length-limit 140]
                     (<= (count q) twit-length-limit)))
-          (load-file "resources/quotes.clj")))
+          (flatten-book-quote (load-file "resources/quotes.clj"))))
+
+(def tweet-time-interval
+  (:tweet-interval-ms (load-file "config.clj")))
 
 (defn tweet [msg]
   (do
