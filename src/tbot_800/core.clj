@@ -17,8 +17,11 @@
 (defn flatten-book-quote [q]
   (mapcat
    (fn [quote-group]
-     (let [postfix (str "{" (:source quote-group) "}")]
-       (map #(str % " " postfix) (:quotes quote-group))))
+     (let [postfix
+           (if (:source quote-group)
+             (str " {" (:source quote-group) "}")
+             "")]
+       (map #(str % postfix) (:quotes quote-group))))
    q))
 
 (def quotes
