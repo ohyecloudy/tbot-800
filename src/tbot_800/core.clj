@@ -3,9 +3,25 @@
    [twitter.oauth]
    [twitter.callbacks]
    [twitter.callbacks.handlers]
-   [twitter.api.restful])
+   [twitter.api.restful]
+   [clojure.java.io]
+   [clj-time.local]
+   [clj-time.format])
   (:import 
    (java.util TimerTask Timer)))
+
+(defn write-log [msg]
+  (letfn [(logFileName []
+            (str (unparse (formatter "yyyy-MM-dd") (local-now))
+                 ".log.txt"))
+          (timestamp []
+            (str (local-now)))]
+    (with-open [wrtr (writer (logFileName) :append true)]
+      (do
+        (.write wrtr (timestamp))
+        (.newLine wrtr)
+        (.write wrtr msg)
+        (.newLine wrtr)))))
 
 (def my-creds 
   (let [config (load-file "config.clj")]
@@ -34,13 +50,13 @@
 
 (defn tweet [msg]
   (do
-   (println "tweet - " msg)
-   (try
-     (statuses-update :oauth-creds my-creds
-                    :params {:status msg})
-     (catch Exception e
-       (println "caught exception: "
-                (.getMessage e))))))
+    (write-log (str "tweet - " msg))
+    (try
+      (statuses-update :oauth-creds my-creds
+                       :params {:status msg})
+      (catch Exception e
+        (println "caught exception: "
+                 (write-log (.getMessage e)))))))
 
 (defn register-schedule-tweet [interval]
   (let [task (proxy [TimerTask] []
