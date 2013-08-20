@@ -8,7 +8,8 @@
    [clj-time.local]
    [clj-time.format])
   (:import 
-   (java.util TimerTask Timer)))
+   (java.util TimerTask Timer))
+  (:gen-class))
 
 (defn write-log [msg]
   (letfn [(logFileName []
