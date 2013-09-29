@@ -30,12 +30,14 @@
                       (config :app-consumer-secret)
                       (config :user-access-token)
                       (config :user-access-token-secret))))
+(def tweet-time-interval
+  (:tweet-interval-ms (load-file "config.clj")))
+(def quotes-path
+  (:quotes-path (load-file "config.clj")))
 (def quotes
   (filter (fn [q] (let [twit-length-limit 140]
                     (<= (count q) twit-length-limit)))
-          (load-file "resources/quotes.clj")))
-(def tweet-time-interval
-  (:tweet-interval-ms (load-file "config.clj")))
+          (load-file quotes-path)))
 
 (defn tweet [msg]
   (do
