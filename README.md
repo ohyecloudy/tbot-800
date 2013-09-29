@@ -21,12 +21,32 @@ $ git clone https://github.com/ohyecloudy/tbot-800.git tbot-800
 ### quote builder 800
 
 ```
-cd tbot-800/quote-builder-800
-lein repl
+$ cd tbot-800/quote-builder-800
+$ lein repl
 ```
 
 ``` clojure
 quote-builder-800.core=> (build "quote-src.clj" "./output-dir")
+```
+
+### tbot
+
+```
+$ cd tbot-800/tbot
+$ cp _config.clj config.clj
+```
+
+edit config.clj
+
+```
+$ lein uberjar
+$ cp script/_run.sh script/run.sh
+```
+
+edit script/run.sh
+
+```
+$ script/run.sh
 ```
 
 ## License
@@ -34,4 +54,3 @@ quote-builder-800.core=> (build "quote-src.clj" "./output-dir")
 Copyright © 2013 Oh Jongbin
 
 Distributed under the Eclipse Public License, the same as Clojure.
-
