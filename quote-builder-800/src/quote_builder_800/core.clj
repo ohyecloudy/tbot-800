@@ -2,7 +2,7 @@
   (:require [clojure.contrib.command-line :as cmd]
             [clojure.java.io :as io]
             [digest :as d]
-            [hiccup.core :as hiccup])
+            [hiccup.page :as hp])
   (:gen-class))
 
 (defn flatten-book-quote [q]
@@ -22,11 +22,24 @@
        quotes))
 
 (defn build-html [q]
-  (hiccup/html [:head
-                [:meta {:charset "utf-8"}]
-                [:title "인용구"]]
-               [:body
-                [:p q]]))
+  (hp/html5 {:lang "en"}
+            [:head
+             [:meta {:charset "utf-8"}]
+             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
+             [:link {:href "http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" :rel "stylesheet"}]
+             [:title "인용구"]]
+            [:body
+             [:div.container
+              [:div.row
+               [:div {:class "col-md-6 col-md-offset-3"}
+                [:div.page-header
+                 [:h1 "인용구 "
+                  [:small
+                   [:a {:href "http://twitter.com/book_quote_bot"
+                        :target "blank"} "@book_quote_bot"]]]]]]
+              [:div.row
+               [:div {:class "col-md-6 col-md-offset-3"}
+                [:p.lead q]]]]]))
 
 (defn build [src-path output-dir]
   (let [flatten-quote (flatten-book-quote (load-file src-path))
