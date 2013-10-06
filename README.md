@@ -26,7 +26,7 @@ $ lein repl
 ```
 
 ``` clojure
-quote-builder-800.core=> (build "quote-src.clj" "./output-dir")
+quote-builder-800.core=> (build "quote-src.clj" "./output-dir" "http://ohyecloudy.github.io/pquotes-repo/quotes/")
 ```
 
 ### tbot

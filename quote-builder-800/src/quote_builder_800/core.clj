@@ -41,16 +41,26 @@
                [:div {:class "col-md-6 col-md-offset-3"}
                 [:p.lead q]]]]]))
 
-(defn build [src-path output-dir]
-  (let [flatten-quote (flatten-book-quote (load-file src-path))
-        key-quote-pairs (append-hash-val flatten-quote)]
+(defn adjust-quote [quote url]
+  (if (<= (count quote) 140)
+    quote
+    (str (apply str (take 120 quote)) " " url)))
+
+(defn write-quotes [output-dir key-quote-pairs base-url]
+  (with-open [w (io/writer (str output-dir "/quotes.clj"))]
+    (.write w "[")
+    (doall (map (fn [p]
+                  (let [url (str base-url (:key p) ".html")
+                        q (adjust-quote (:quote p) url)]
+                    (do (.write w (str "\"" q "\""))
+                        (.newLine w))))
+                key-quote-pairs))
+    (.write w "]")))
+
+(defn build [src-path output-dir base-url]
+  (let [key-quote-pairs (append-hash-val (flatten-book-quote (load-file src-path)))]
     (do
-      (with-open [w (io/writer (str output-dir "/quotes.clj"))]
-        (.write w "[")
-        (doall (map #(do (.write w (str "\"" % "\""))
-                         (.newLine w))
-                    flatten-quote))
-        (.write w "]"))
+      (write-quotes output-dir key-quote-pairs base-url)
       (doall
        (map (fn [p]
               (let [k (:key p)
