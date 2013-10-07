@@ -21,30 +21,40 @@
   (map (fn [q] {:key (d/md5 q) :quote q})
        quotes))
 
+(def tweet-quote-str-count 100)
+
 (defn build-html [q]
-  (hp/html5 {:lang "en"}
-            [:head
-             [:meta {:charset "utf-8"}]
-             [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-             [:link {:href "http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" :rel "stylesheet"}]
-             [:title "인용구"]]
-            [:body
-             [:div.container
-              [:div.row
-               [:div {:class "col-md-6 col-md-offset-3"}
-                [:div.page-header
-                 [:h1 "인용구 "
-                  [:small
-                   [:a {:href "http://twitter.com/book_quote_bot"
-                        :target "blank"} "@book_quote_bot"]]]]]]
-              [:div.row
-               [:div {:class "col-md-6 col-md-offset-3"}
-                [:p.lead q]]]]]))
+; 트위터 카드에는 트윗하는 인용구 이후를 붙여서 트위터 카드로 최대한 볼 수 있게 한다.
+  (let [twitter-card-desc (if (> (count q) tweet-quote-str-count)
+                            (apply str (drop tweet-quote-str-count q))
+                            q)]
+    (hp/html5 {:lang "en"}
+              [:head
+               [:meta {:charset "utf-8"}]
+               [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
+               [:meta {:name "twitter:card" :content "summary"}]
+               [:meta {:name "twitter:title" :content "카드로도 다 못 보면 링크 고고"}]
+               [:meta {:name "twitter:creator" :content "@book_quote_bot"}]
+               [:meta {:name "twitter:description" :content twitter-card-desc}]
+               [:link {:href "http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" :rel "stylesheet"}]
+               [:title "인용구"]]
+              [:body
+               [:div.container
+                [:div.row
+                 [:div {:class "col-md-6 col-md-offset-3"}
+                  [:div.page-header
+                   [:h1 "인용구 "
+                    [:small
+                     [:a {:href "http://twitter.com/book_quote_bot"
+                          :target "blank"} "@book_quote_bot"]]]]]]
+                [:div.row
+                 [:div {:class "col-md-6 col-md-offset-3"}
+                  [:p.lead q]]]]])))
 
 (defn adjust-quote [quote url]
   (if (<= (count quote) 140)
     quote
-    (str (apply str (take 100 quote)) "... " url)))
+    (str (apply str (take tweet-quote-str-count quote)) "... " url)))
 
 (defn write-quotes [output-dir key-quote-pairs base-url]
   (with-open [w (io/writer (str output-dir "/quotes.clj"))]
