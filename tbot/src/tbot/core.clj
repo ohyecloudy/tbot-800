@@ -34,10 +34,16 @@
   (:tweet-interval-ms (load-file "config.clj")))
 (def quotes-path
   (:quotes-path (load-file "config.clj")))
-(def quotes
-  (filter (fn [q] (let [twit-length-limit 140]
-                    (<= (count q) twit-length-limit)))
-          (load-file quotes-path)))
+(def *quotes* (ref nil))
+(defn next-quote []
+  (do
+    (when (empty? (deref *quotes*))
+      (dosync (ref-set *quotes*
+                       (shuffle (load-file quotes-path)))))
+    (let [q (first (deref *quotes*))]
+      (dosync (ref-set *quotes*
+                       (rest (deref *quotes*))))
+      q)))
 
 (defn tweet [msg]
   (do
@@ -52,7 +58,7 @@
 (defn register-schedule-tweet [interval]
   (let [task (proxy [TimerTask] []
                (run []
-                 (tweet (rand-nth quotes))))
+                 (tweet (next-quote))))
         delay (long 1000)]
     (. (new Timer) (schedule task delay (long interval)))))
 
