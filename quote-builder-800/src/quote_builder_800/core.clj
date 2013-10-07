@@ -44,7 +44,7 @@
 (defn adjust-quote [quote url]
   (if (<= (count quote) 140)
     quote
-    (str (apply str (take 120 quote)) " " url)))
+    (str (apply str (take 100 quote)) "... " url)))
 
 (defn write-quotes [output-dir key-quote-pairs base-url]
   (with-open [w (io/writer (str output-dir "/quotes.clj"))]
