@@ -45,8 +45,8 @@
                   [:div.page-header
                    [:h1 "인용구 "
                     [:small
-                     [:a {:href "http://twitter.com/book_quote_bot"
-                          :target "blank"} "@book_quote_bot"]]]]]]
+                     [:a {:href (str "http://twitter.com/" twitter-card-creator)
+                          :target "blank"} twitter-card-creator]]]]]]
                 [:div.row
                  [:div {:class "col-md-6 col-md-offset-3"}
                   [:p.lead q]]]]])))
