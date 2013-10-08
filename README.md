@@ -2,8 +2,6 @@
 
 일정한 시간 간격으로 `tweet`을 하는 봇. `인용구` 리스트를 만드는 `quote builder 800`과 `tweet`을 하는 `tbot`으로 구성.
 
-    "Usage : -i quote-src.clj -o ./output-dir"
-
 ## example
 
 운영 중인 트위터 봇
@@ -26,7 +24,7 @@ $ lein repl
 ```
 
 ``` clojure
-quote-builder-800.core=> (build "quote-src.clj" "./output-dir" "http://ohyecloudy.github.io/pquotes-repo/quotes/")
+quote-builder-800.core=> (build "quote-src.clj" "./output-dir" "http://ohyecloudy.github.io/pquotes-repo/quotes/" "@twitter_card_creator")
 ```
 
 ### tbot

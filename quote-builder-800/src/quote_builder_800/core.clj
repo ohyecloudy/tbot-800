@@ -23,7 +23,7 @@
 
 (def tweet-quote-str-count 100)
 
-(defn build-html [q]
+(defn build-html [q twitter-card-creator]
 ; 트위터 카드에는 트윗하는 인용구 이후를 붙여서 트위터 카드로 최대한 볼 수 있게 한다.
   (let [twitter-card-desc (if (> (count q) tweet-quote-str-count)
                             (apply str (drop tweet-quote-str-count q))
@@ -34,7 +34,7 @@
                [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
                [:meta {:name "twitter:card" :content "summary"}]
                [:meta {:name "twitter:title" :content "카드로도 다 못 보면 링크 고고"}]
-               [:meta {:name "twitter:creator" :content "@book_quote_bot"}]
+               [:meta {:name "twitter:creator" :content twitter-card-creator}]
                [:meta {:name "twitter:description" :content twitter-card-desc}]
                [:link {:href "http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" :rel "stylesheet"}]
                [:title "인용구"]]
@@ -67,7 +67,7 @@
                 key-quote-pairs))
     (.write w "]")))
 
-(defn build [src-path output-dir base-url]
+(defn build [src-path output-dir base-url twitter-card-creator]
   (let [key-quote-pairs (append-hash-val (flatten-book-quote (load-file src-path)))]
     (do
       (write-quotes output-dir key-quote-pairs base-url)
@@ -76,13 +76,5 @@
               (let [k (:key p)
                     q (:quote p)]
                 (with-open [w (io/writer (str output-dir "/" k ".html"))]
-                  (.write w (build-html q)))))
+                  (.write w (build-html q twitter-card-creator)))))
             key-quote-pairs)))))
-
-(defn -main [& args]
-  (cmd/with-command-line
-    args
-    "Usage : -i quote-src.clj -o ./output-dir"
-    [[i "quoute source file path"]
-     [o "build output dir"]]
-    (build i o)))
