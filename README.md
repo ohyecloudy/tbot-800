@@ -7,6 +7,7 @@
 운영 중인 트위터 봇
 
 * [@book\_quote\_bot](https://twitter.com/book_quote_bot)
+* [@bquote\_bot](https://twitter.com/bquote_bot)
 
 ## getting start
 
