@@ -34,15 +34,15 @@
   (:tweet-interval-ms (load-file "config.clj")))
 (def quotes-path
   (:quotes-path (load-file "config.clj")))
-(def *quotes* (ref nil))
+(def quotes (ref nil))
 (defn next-quote []
   (do
-    (when (empty? (deref *quotes*))
-      (dosync (ref-set *quotes*
+    (when (empty? (deref quotes))
+      (dosync (ref-set quotes
                        (shuffle (load-file quotes-path)))))
-    (let [q (first (deref *quotes*))]
-      (dosync (ref-set *quotes*
-                       (rest (deref *quotes*))))
+    (let [q (first (deref quotes))]
+      (dosync (ref-set quotes
+                       (rest (deref quotes))))
       q)))
 
 (defn tweet [msg]
