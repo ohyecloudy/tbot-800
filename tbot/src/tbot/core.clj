@@ -35,11 +35,16 @@
 (def quotes-path
   (:quotes-path (load-file "config.clj")))
 (def quotes (ref nil))
+
+(defn init-quotes []
+  (let [shuffled-quotes (shuffle (load-file quotes-path))
+        c (count shuffled-quotes)]
+    (into [(str "인용구 트윗 한 바퀴 돕니다. 총 인용구는 " c "개입니다.")] shuffled-quotes)))
+
 (defn next-quote []
   (do
     (when (empty? (deref quotes))
-      (dosync (ref-set quotes
-                       (shuffle (load-file quotes-path)))))
+      (dosync (ref-set quotes (init-quotes))))
     (let [q (first (deref quotes))]
       (dosync (ref-set quotes
                        (rest (deref quotes))))
