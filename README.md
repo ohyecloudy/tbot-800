@@ -50,7 +50,7 @@ $ script/run.sh
 
 ## read more about tbot-800
 
-* [tbot-800 프로젝트 개발 일기](http://ohyecloudy.github.io/ddiary/categories.html#tbot-800-ref)
+* [tbot-800 프로젝트 개발 일기](http://ohyecloudy.com/ddiary/categories.html#tbot-800-ref)
 * [클로저(clojure)로 짠 트위터 봇 tbot-800을 출동시키고](http://ohyecloudy.com/pnotes/archives/1850)
 
 ## license
