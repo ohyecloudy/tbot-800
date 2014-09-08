@@ -7,4 +7,5 @@
                  [org.clojure/clojure-contrib "1.2.0"]
                  [digest "1.4.3"]
                  [hiccup "1.0.4"]]
+  :plugins [[cider/cider-nrepl "0.7.0-SNAPSHOT"]]
   :main quote-builder-800.core)
