@@ -3,5 +3,7 @@ lein: lein2
 jdk:
   - openjdk7
 install: true
-script: cd tbot;lein uberjar;cd ..;cd quote-builder-800;lein uberjar;cd ..
+script:
+  - cd tbot;lein uberjar;cd ..
+  - cd quote-builder-800;lein uberjar;cd ..
 
