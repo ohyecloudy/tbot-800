@@ -1,9 +1,20 @@
 language: clojure
 lein: lein2
 jdk:
-  - openjdk7
+- openjdk7
 install: true
 script:
-  - cd tbot;lein uberjar;cd ..
-  - cd quote-builder-800;lein uberjar;cd ..
+- cd tbot;lein uberjar;cd ..
+- cd quote-builder-800;lein uberjar;cd ..
+deploy:
+  provider: releases
+  api_key:
+    secure: rIif4kcyIftvKyR56BN6DdtSMdEagWuBuY04KDDYYlOZURbKueKJndMpci77qzStIp+vNzV7d5dTGJzkhmLzpnVhnFcYE1vetsJlp9VIfuAYEzcke2AlnCkbHRMIzlspaTGqDCsbTgTbG4SnMF9s2JVhFiVFPQpKqJpuWfB0sls=
+  skip_cleanup: true
+  file: 
+  - /home/travis/build/ohyecloudy/tbot-800/quote-builder-800/target/quote-builder-800-0.1.0-SNAPSHOT-standalone.jar
+  - /home/travis/build/ohyecloudy/tbot-800/tbot/target/tbot-0.1.0-SNAPSHOT-standalone.jar
+  on:
+    tags: true
+    repo: ohyecloudy/tbot-800
 
