@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ohyecloudy/tbot-800.svg?branch=master)](https://travis-ci.org/ohyecloudy/tbot-800)
+
 # tbot-800
 
 일정한 시간 간격으로 `tweet`을 하는 봇. `인용구` 리스트를 만드는 `quote builder 800`과 `tweet`을 하는 `tbot`으로 구성.
