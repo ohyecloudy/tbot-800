@@ -1,6 +1,6 @@
 (ns quote-builder-800.core
-  (:require [clojure.contrib.command-line :as cmd]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
+            [clojure.tools.cli :as cli]
             [digest :as d]
             [hiccup.page :as hp])
   (:gen-class))
@@ -78,3 +78,41 @@
                 (with-open [w (io/writer (str output-dir "/" k ".html"))]
                   (.write w (build-html q twitter-card-creator)))))
             key-quote-pairs)))))
+
+(def cli-options
+  [["-s"
+    "--src-path PATH"
+    "quotes source file path"
+    "ex) ./src/q-src.clj"
+    :default nil]
+   ["-o"
+    "--out-path PATH"
+    "output path"
+    "ex) ./output-dir"
+    :default nil]
+   ["-b"
+    "--base-url URL"
+    "twitter card base url"
+    "ex) http://ohrepos.github.io/pquotes-repo/quotes/"
+    :default nil]
+   ["-t"
+    "--twitter-id ID"
+    "twitter id"
+    "ex) @book_quote_bot"
+    :default nil]
+   ["-h" "--help"]])
+
+(defn -main [& args]
+  (let [{:keys [options _ errors summary]}
+        (cli/parse-opts args cli-options)
+        not-options
+        (some #(nil? %) (vals options))]
+    (cond
+     (:help options) (println summary)
+     errors (doall (println errors) (println summary))
+     not-options (println summary)
+     :else (build (:src-path options)
+                  (:out-path options)
+                  (:base-url options)
+                  (:twitter-id options)))))
+
