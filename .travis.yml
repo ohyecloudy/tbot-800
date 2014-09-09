@@ -16,5 +16,6 @@ deploy:
   - /home/travis/build/ohyecloudy/tbot-800/tbot/target/tbot-0.1.0-SNAPSHOT-standalone.jar
   on:
     tags: true
+    all_branches: true
     repo: ohyecloudy/tbot-800
 
