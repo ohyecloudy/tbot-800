@@ -24,48 +24,49 @@
         (.write wrtr msg)
         (.newLine wrtr)))))
 
-(def my-creds 
-  (let [config (load-file "config.clj")]
-    (make-oauth-creds (config :app-consumer-key)
-                      (config :app-consumer-secret)
-                      (config :user-access-token)
-                      (config :user-access-token-secret))))
-(def tweet-time-interval
-  (:tweet-interval-ms (load-file "config.clj")))
-(def quotes-path
-  (:quotes-path (load-file "config.clj")))
+(defn make-creds [config]
+  (make-oauth-creds (config :app-consumer-key)
+                    (config :app-consumer-secret)
+                    (config :user-access-token)
+                    (config :user-access-token-secret)))
 (def quotes (ref nil))
 
-(defn init-quotes []
+(defn init-quotes [quotes-path]
   (let [shuffled-quotes (shuffle (load-file quotes-path))
         c (count shuffled-quotes)]
     (into [(str "인용구 트윗 한 바퀴 돕니다. 총 인용구는 " c "개입니다.")] shuffled-quotes)))
 
-(defn next-quote []
+(defn next-quote [quotes-path]
   (do
     (when (empty? (deref quotes))
-      (dosync (ref-set quotes (init-quotes))))
+      (dosync (ref-set quotes (init-quotes quotes-path))))
     (let [q (first (deref quotes))]
       (dosync (ref-set quotes
                        (rest (deref quotes))))
       q)))
 
-(defn tweet [msg]
+(defn tweet [msg creds]
   (do
     (write-log (str "tweet - " msg))
     (try
-      (statuses-update :oauth-creds my-creds
+      (statuses-update :oauth-creds creds
                        :params {:status msg})
       (catch Exception e
         (println "caught exception: "
                  (write-log (.getMessage e)))))))
 
-(defn register-schedule-tweet [interval]
+(defn register-schedule-tweet [interval creds quotes-path]
   (let [task (proxy [TimerTask] []
                (run []
-                 (tweet (next-quote))))
+                 (tweet (next-quote quotes-path) creds)))
         delay (long 1000)]
     (. (new Timer) (schedule task delay (long interval)))))
 
 (defn -main [& args]
-  (register-schedule-tweet tweet-time-interval))
+  (if (not= 1 (count args))
+    (println "need config file path ex) ./config.clj")
+    (let [config (load-file (first args))]
+      (register-schedule-tweet (:tweet-interval-ms config)
+                               (make-creds config)
+                               (:quotes-path config)))))
+
