@@ -40,14 +40,18 @@
     (catch Exception e
       (println "caught exception: " (.getMessage e)))))
 
+(defn tweet-then-prepare-next [config]
+  (let [src-path (:quotes-path config)
+        remain-path (:remain-path config)
+        repo (quote-repo src-path remain-path)]
+    (do
+      (tweet (make-creds config) (first repo))
+      (spit remain-path (prn-str (rest repo))))))
+
 (defn -main [& args]
   (if (not= 1 (count args))
     (println "need config file path ex) ./config.clj")
-    (let [config (load-file (first args))
-          src-path (:quotes-path config)
-          remain-path (:remain-path config)
-          repo (quote-repo src-path remain-path)]
-      (do
-        (tweet (make-creds config) (first repo))
-        (spit remain-path (prn-str (rest repo)))))))
+    (let [configs (load-file (first args))]
+      (doall
+       (map tweet-then-prepare-next configs)))))
 
