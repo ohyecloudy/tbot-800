@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [twitter-api "0.7.5"]
                  [clj-time "0.6.0"]]
+  :plugins [[cider/cider-nrepl "0.7.0-SNAPSHOT"]]
   :main tbot.core)
