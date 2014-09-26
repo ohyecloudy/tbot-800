@@ -5,8 +5,6 @@
    [twitter.callbacks.handlers]
    [twitter.api.restful]
    [clojure.java.io]
-   [clj-time.local]
-   [clj-time.format])
   (:gen-class))
 
 (defn make-creds [config]
