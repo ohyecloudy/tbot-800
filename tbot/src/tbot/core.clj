@@ -7,66 +7,47 @@
    [clojure.java.io]
    [clj-time.local]
    [clj-time.format])
-  (:import 
-   (java.util TimerTask Timer))
   (:gen-class))
-
-(defn write-log [msg]
-  (letfn [(logFileName []
-            (str (unparse (formatter "yyyy-MM-dd") (local-now))
-                 ".log.txt"))
-          (timestamp []
-            (str (local-now)))]
-    (with-open [wrtr (writer (logFileName) :append true)]
-      (do
-        (.write wrtr (timestamp))
-        (.newLine wrtr)
-        (.write wrtr msg)
-        (.newLine wrtr)))))
 
 (defn make-creds [config]
   (make-oauth-creds (config :app-consumer-key)
                     (config :app-consumer-secret)
                     (config :user-access-token)
                     (config :user-access-token-secret)))
-(def quotes (ref nil))
 
-(defn init-quotes [quotes-path]
+(defn load-remain-quote-repo [remain-path]
+  (if (.exists (as-file remain-path))
+    (read-string (slurp remain-path))
+    nil))
+
+(defn load-src-quote-repo [quotes-path]
   (let [shuffled-quotes (shuffle (load-file quotes-path))
         c (count shuffled-quotes)]
-    (into [(str "인용구 트윗 한 바퀴 돕니다. 총 인용구는 " c "개입니다.")] shuffled-quotes)))
+    (into [(str "인용구 트윗 한 바퀴 돕니다. 총 인용구는 " c "개입니다.")]
+          shuffled-quotes)))
 
-(defn next-quote [quotes-path]
-  (do
-    (when (empty? (deref quotes))
-      (dosync (ref-set quotes (init-quotes quotes-path))))
-    (let [q (first (deref quotes))]
-      (dosync (ref-set quotes
-                       (rest (deref quotes))))
-      q)))
+(defn quote-repo [quotes-path remain-path]
+  (let [remain-repo (load-remain-quote-repo remain-path)
+        src-repo-loader #(load-src-quote-repo quotes-path)]
+    (if (and (not (nil? remain-repo)) (< 0 (count remain-repo)))
+      remain-repo
+      (src-repo-loader))))
 
-(defn tweet [msg creds]
-  (do
-    (write-log (str "tweet - " msg))
-    (try
-      (statuses-update :oauth-creds creds
-                       :params {:status msg})
-      (catch Exception e
-        (println "caught exception: "
-                 (write-log (.getMessage e)))))))
-
-(defn register-schedule-tweet [interval creds quotes-path]
-  (let [task (proxy [TimerTask] []
-               (run []
-                 (tweet (next-quote quotes-path) creds)))
-        delay (long 1000)]
-    (. (new Timer) (schedule task delay (long interval)))))
+(defn tweet [creds msg]
+  (try
+    (statuses-update :oauth-creds creds
+                     :params {:status msg})
+    (catch Exception e
+      (println "caught exception: " (.getMessage e)))))
 
 (defn -main [& args]
   (if (not= 1 (count args))
     (println "need config file path ex) ./config.clj")
-    (let [config (load-file (first args))]
-      (register-schedule-tweet (:tweet-interval-ms config)
-                               (make-creds config)
-                               (:quotes-path config)))))
+    (let [config (load-file (first args))
+          src-path (:quotes-path config)
+          remain-path (str src-path ".rem")
+          repo (quote-repo src-path remain-path)]
+      (do
+        (tweet (make-creds config) (first repo))
+        (spit remain-path (prn-str (rest repo)))))))
 
