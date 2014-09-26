@@ -45,7 +45,7 @@
     (println "need config file path ex) ./config.clj")
     (let [config (load-file (first args))
           src-path (:quotes-path config)
-          remain-path (str src-path ".rem")
+          remain-path (:remain-path config)
           repo (quote-repo src-path remain-path)]
       (do
         (tweet (make-creds config) (first repo))

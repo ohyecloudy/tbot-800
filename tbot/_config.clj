@@ -2,4 +2,5 @@
  :app-consumer-secret "FIXME"
  :user-access-token "FIXME"
  :user-access-token-secret "FIXME"
- :quotes-path "FIXME"}
+ :quotes-path "FIXME"
+ :remain-path "FIXME"}
