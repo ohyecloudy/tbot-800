@@ -4,7 +4,7 @@
    [twitter.callbacks]
    [twitter.callbacks.handlers]
    [twitter.api.restful]
-   [clojure.java.io]
+   [clojure.java.io])
   (:gen-class))
 
 (defn make-creds [config]
