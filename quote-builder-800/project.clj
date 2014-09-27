@@ -8,4 +8,5 @@
                  [digest "1.4.3"]
                  [hiccup "1.0.4"]]
   :plugins [[cider/cider-nrepl "0.7.0-SNAPSHOT"]]
+  :uberjar-name "quote-builder-800-standalone.jar"
   :main quote-builder-800.core)

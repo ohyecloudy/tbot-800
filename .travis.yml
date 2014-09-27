@@ -12,8 +12,8 @@ deploy:
     secure: rIif4kcyIftvKyR56BN6DdtSMdEagWuBuY04KDDYYlOZURbKueKJndMpci77qzStIp+vNzV7d5dTGJzkhmLzpnVhnFcYE1vetsJlp9VIfuAYEzcke2AlnCkbHRMIzlspaTGqDCsbTgTbG4SnMF9s2JVhFiVFPQpKqJpuWfB0sls=
   skip_cleanup: true
   file: 
-  - /home/travis/build/ohyecloudy/tbot-800/quote-builder-800/target/quote-builder-800-0.1.0-SNAPSHOT-standalone.jar
-  - /home/travis/build/ohyecloudy/tbot-800/tbot/target/tbot-0.1.0-SNAPSHOT-standalone.jar
+  - /home/travis/build/ohyecloudy/tbot-800/quote-builder-800/target/quote-builder-800-standalone.jar
+  - /home/travis/build/ohyecloudy/tbot-800/tbot/target/tbot-standalone.jar
   on:
     tags: true
     all_branches: true
