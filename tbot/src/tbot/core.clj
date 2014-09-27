@@ -18,15 +18,15 @@
     (read-string (slurp remain-path))
     nil))
 
-(defn load-src-quote-repo [quotes-path]
+(defn load-src-quote-repo [quotes-path master-id]
   (let [shuffled-quotes (shuffle (load-file quotes-path))
         c (count shuffled-quotes)]
-    (into [(str "인용구 트윗 한 바퀴 돕니다. 총 인용구는 " c "개입니다.")]
+    (into [(str "인용구 트윗 한 바퀴 돕니다. 총 인용구는 " c "개입니다. @" master-id)]
           shuffled-quotes)))
 
-(defn quote-repo [quotes-path remain-path]
+(defn quote-repo [quotes-path remain-path master-id]
   (let [remain-repo (load-remain-quote-repo remain-path)
-        src-repo-loader #(load-src-quote-repo quotes-path)]
+        src-repo-loader #(load-src-quote-repo quotes-path master-id)]
     (if (and (not (nil? remain-repo)) (< 0 (count remain-repo)))
       remain-repo
       (src-repo-loader))))
@@ -41,7 +41,8 @@
 (defn tweet-then-prepare-next [config]
   (let [src-path (:quotes-path config)
         remain-path (:remain-path config)
-        repo (quote-repo src-path remain-path)]
+        master-id (:master-twitter-id config)
+        repo (quote-repo src-path remain-path master-id)]
     (do
       (tweet (make-creds config) (first repo))
       (spit remain-path (prn-str (rest repo))))))
