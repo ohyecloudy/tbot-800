@@ -4,8 +4,8 @@ jdk:
 - openjdk7
 install: true
 script:
-- cd tbot;lein uberjar;cd ..
-- cd quote-builder-800;lein uberjar;cd ..
+- cd tbot;lein uberjar
+- cd quote-builder-800;lein uberjar
 deploy:
 - provider: releases
   api_key:
