@@ -23,6 +23,7 @@ deploy:
     secure: mRRHeTjMSJ0gqg9aVQOghRjAVYX+kW2LKL38rLVZb8rWKbsfncl60s8S2WVr0UbqJx5Tls3p8RJaS0Yo61W/8/H6zBPl15zD2+Jhk//E5IA+mku16ZMUw86tNWODKO0vhk8BwNXrSjmk+Wg/e8hsP2PqliQMrNIZK6vAnd0p0oU=
   app: tbot-800-heroku
   skip_cleanup: true
+  strategy: git
   file:
   - /home/travis/build/ohyecloudy/tbot-800/tbot/target/tbot-standalone.jar
   on:
