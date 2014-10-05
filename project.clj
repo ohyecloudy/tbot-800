@@ -6,6 +6,6 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [twitter-api "0.7.5"]]
   :plugins [[cider/cider-nrepl "0.7.0-SNAPSHOT"]]
-  :uberjar-name "tbot-standalone.jar"
-  :main tbot.core)
+  :uberjar-name "tbot-800-standalone.jar"
+  :main tbot-800.core)
 

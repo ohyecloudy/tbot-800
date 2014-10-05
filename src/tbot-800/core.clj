@@ -1,4 +1,4 @@
-(ns tbot.core
+(ns tbot-800.core
   (:use
    [twitter.oauth]
    [twitter.callbacks]
