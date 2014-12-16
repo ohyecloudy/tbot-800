@@ -5,7 +5,6 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [twitter-api "0.7.5"]]
-  :plugins [[cider/cider-nrepl "0.7.0-SNAPSHOT"]]
+  :plugins [[cider/cider-nrepl "0.8.2-SNAPSHOT"]]
   :uberjar-name "tbot-800-standalone.jar"
   :main tbot-800.core)
-
