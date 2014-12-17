@@ -4,7 +4,8 @@
    [twitter.callbacks]
    [twitter.callbacks.handlers]
    [twitter.api.restful]
-   [clojure.java.io])
+   [clojure.java.io]
+   [environ.core])
   (:import
    (java.util TimerTask Timer))
   (:gen-class))
