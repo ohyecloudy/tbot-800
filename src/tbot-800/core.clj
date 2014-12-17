@@ -5,6 +5,8 @@
    [twitter.callbacks.handlers]
    [twitter.api.restful]
    [clojure.java.io])
+  (:import
+   (java.util TimerTask Timer))
   (:gen-class))
 
 (defn make-creds [config]
@@ -31,20 +33,26 @@
 
 (defn tweet [creds msg]
   (try
+    (println "tweet : " msg)
     (statuses-update :oauth-creds creds
                      :params {:status msg})
     (catch Exception e
       (println "caught exception: " (.getMessage e)))))
 
-(defn tweet-quote [config]
+(defn register-tweet-scheduler [config]
   (let [master-id (:master-twitter-id config)
         src-url (:quotes-url config)
-        quote-builder (partial build-quotes master-id)]
-    (tweet (make-creds config) (pop-quote quote-builder src-url))))
+        quote-builder (partial build-quotes master-id)
+        interval (* (:tweet-interval-min config) 60 1000)
+        task (proxy [TimerTask] []
+               (run []
+                 (tweet (make-creds config) (pop-quote quote-builder src-url))))
+        delay (long 1000)]
+    (. (new Timer) (schedule task delay (long interval)))))
 
 (defn -main [& args]
   (if (not= 1 (count args))
     (println "need config file path ex) ./config.clj")
     (let [configs (load-file (first args))]
       (doall
-       (map tweet-quote configs)))))
+       (map register-tweet-scheduler configs)))))
