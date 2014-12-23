@@ -51,9 +51,24 @@
         delay (long 1000)]
     (. (new Timer) (schedule task delay (long interval)))))
 
+(def config-unit
+  ["app-consumer-key"
+   "app-consumer-secret"
+   "user-access-token"
+   "user-access-token-secret"
+   "quotes-url"
+   "master-twitter-id"
+   "tweet-interval-min"])
+
+(defn load-config-elem [template env num]
+  (reduce conj {}
+          (map #(vector % (env (str % "-" num))) template)))
+
+(defn load-configs [env]
+  (let [loader (partial load-config-elem config-unit env)]
+    (filter #(not-any? nil? (vals %)) (map loader (range 0 10)))))
+
 (defn -main [& args]
-  (if (not= 1 (count args))
-    (println "need config file path ex) ./config.clj")
-    (let [configs (load-file (first args))]
-      (doall
-       (map register-tweet-scheduler configs)))))
+  (let [configs (load-configs env)]
+    (doall
+     (map register-tweet-scheduler configs))))

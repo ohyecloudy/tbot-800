@@ -8,10 +8,18 @@
 
 ```
 $ lein uberjar
-$ cp _config.clj target/config.clj
-$ vim target/config.clj
+$ export app_consumer_keyN=FIXME
+$ export app_consumer_secretN=FIXME
+$ export user_access_tokenN=FIXME
+$ export user_access_token_secretN=FIXME
+$ export quotes_urlN=FIXME
+$ export master_twitter_idN=FIXME
+$ export tweet_interval_minN=1
 $ java -jar target/tbot-800-standalone.jar
 ```
+
+* N = [0, 9]
+* 트위터 계정 여러개를 정의할 수 있습니다.
 
 ## 운영 중인 트위터 봇
 
@@ -28,4 +36,3 @@ $ java -jar target/tbot-800-standalone.jar
 Copyright © 2013 Oh Jongbin
 
 Distributed under the Eclipse Public License, the same as Clojure.
-
