@@ -52,7 +52,7 @@
     (fn [] (tweet (make-creds config) (pop-quote quote-builder src-url)))))
 
 (defn register-tweet-scheduler [config]
-  (let [interval (* (:tweet-interval-min config) 60 1000)]
+  (let [interval (* (Integer/parseInt (:tweet-interval-min config)) 60 1000)]
     (set-interval (tweet-builder config) interval)))
 
 (def config-unit
@@ -66,7 +66,7 @@
 
 (defn load-config-elem [template env num]
   (reduce conj {}
-          (map #(vector % (env (str % "-" num))) template)))
+          (map #(vector (keyword %) (env (keyword (str % "-" num)))) template)))
 
 (defn load-configs [env]
   (let [loader (partial load-config-elem config-unit env)]
