@@ -7,8 +7,6 @@
    [clojure.java.io]
    [environ.core])
   (:require [clojure.tools.logging :as log])
-  (:import
-   (java.util TimerTask Timer))
   (:gen-class))
 
 (defn make-creds [config]
@@ -41,16 +39,21 @@
     (catch Exception e
       (log/error "caught exception: " (.getMessage e)))))
 
-(defn register-tweet-scheduler [config]
+(defmacro forever [& body]
+  `(while true ~@body))
+
+(defn set-interval [callback ms]
+  (future (forever (do (Thread/sleep ms) (callback)))))
+
+(defn tweet-builder [config]
   (let [master-id (:master-twitter-id config)
         src-url (:quotes-url config)
-        quote-builder (partial build-quotes master-id)
-        interval (* (:tweet-interval-min config) 60 1000)
-        task (proxy [TimerTask] []
-               (run []
-                 (tweet (make-creds config) (pop-quote quote-builder src-url))))
-        delay (long 1000)]
-    (. (new Timer) (schedule task delay (long interval)))))
+        quote-builder (partial build-quotes master-id)]
+    (fn [] (tweet (make-creds config) (pop-quote quote-builder src-url)))))
+
+(defn register-tweet-scheduler [config]
+  (let [interval (* (:tweet-interval-min config) 60 1000)]
+    (set-interval (tweet-builder config) interval)))
 
 (def config-unit
   ["app-consumer-key"
@@ -61,7 +64,6 @@
    "master-twitter-id"
    "tweet-interval-min"])
 
-
 (defn load-config-elem [template env num]
   (reduce conj {}
           (map #(vector % (env (str % "-" num))) template)))
@@ -70,11 +72,14 @@
   (let [loader (partial load-config-elem config-unit env)]
     (filter #(not-any? nil? (vals %)) (map loader (range 0 10)))))
 
+(defn wait-tweet-scheduler [coll]
+  (letfn [(end-cond [coll] (every? future-done? coll))]
+    (while (end-cond coll))))
+
 (defn -main [& args]
   (let [configs (load-configs env)]
     (if (empty? configs)
       (log/error (str "set "
                       (clojure.string/join ", "
                                            (map #(str % "[N]") config-unit))))
-      (doall
-       (map register-tweet-scheduler configs)))))
+      (wait-tweet-scheduler (map register-tweet-scheduler configs)))))
