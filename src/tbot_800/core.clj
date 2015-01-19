@@ -79,7 +79,8 @@
 (defn -main [& args]
   (let [configs (load-configs env)]
     (if (empty? configs)
-      (log/error (str "set "
-                      (clojure.string/join ", "
-                                           (map #(str % "[N]") config-unit))))
+      (do
+        (println "set environment variables")
+        (println (map #(str (clojure.string/replace % #"-" "_") "_1")
+                     config-unit)))
       (wait-tweet-scheduler (map register-tweet-scheduler configs)))))
