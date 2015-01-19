@@ -4,6 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
+                 [org.clojure/tools.logging "0.3.1"]
+                 [org.slf4j/slf4j-simple "1.6.6"]
                  [twitter-api "0.7.5"]
                  [environ "1.0.0"]]
   :plugins [[cider/cider-nrepl "0.8.2-SNAPSHOT"]]

@@ -6,6 +6,7 @@
    [twitter.api.restful]
    [clojure.java.io]
    [environ.core])
+  (:require [clojure.tools.logging :as log])
   (:import
    (java.util TimerTask Timer))
   (:gen-class))
@@ -34,11 +35,11 @@
 
 (defn tweet [creds msg]
   (try
-    (println "tweet : " msg)
+    (log/info "tweet : " msg)
     (statuses-update :oauth-creds creds
                      :params {:status msg})
     (catch Exception e
-      (println "caught exception: " (.getMessage e)))))
+      (log/error "caught exception: " (.getMessage e)))))
 
 (defn register-tweet-scheduler [config]
   (let [master-id (:master-twitter-id config)
@@ -60,6 +61,7 @@
    "master-twitter-id"
    "tweet-interval-min"])
 
+
 (defn load-config-elem [template env num]
   (reduce conj {}
           (map #(vector % (env (str % "-" num))) template)))
@@ -70,5 +72,9 @@
 
 (defn -main [& args]
   (let [configs (load-configs env)]
-    (doall
-     (map register-tweet-scheduler configs))))
+    (if (empty? configs)
+      (log/error (str "set "
+                      (clojure.string/join ", "
+                                           (map #(str % "[N]") config-unit))))
+      (doall
+       (map register-tweet-scheduler configs)))))
