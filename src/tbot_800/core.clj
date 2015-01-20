@@ -53,7 +53,9 @@
 
 (defn register-tweet-scheduler [config]
   (let [interval (* (Integer/parseInt (:tweet-interval-min config)) 60 1000)]
-    (set-interval (tweet-builder config) interval)))
+    (do
+      (log/info "register tweet scheduler")
+      (set-interval (tweet-builder config) interval))))
 
 (def config-unit
   ["app-consumer-key"
