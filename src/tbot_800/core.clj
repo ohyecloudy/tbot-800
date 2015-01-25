@@ -16,10 +16,8 @@
                     (config :user-access-token-secret)))
 
 (defn build-quotes [master-id url]
-  (let [shuffled-quotes (shuffle (read-string (slurp url)))
-        c (count shuffled-quotes)]
-    (into [(str "인용구 트윗 한 바퀴 돕니다. 총 인용구는 " c "개입니다. @" master-id)]
-          shuffled-quotes)))
+  (let [shuffled-quotes (shuffle (read-string (slurp url)))]
+    shuffled-quotes))
 
 (def quotes (ref {}))
 (defn pop-quote [builder url]
