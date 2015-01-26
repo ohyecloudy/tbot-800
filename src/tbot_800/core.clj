@@ -81,6 +81,6 @@
     (if (empty? configs)
       (do
         (println "set environment variables")
-        (println (map #(str (clojure.string/replace % #"-" "_") "_1")
+        (println (map #(str (clojure.string/replace % #"-" "_") "_0")
                      config-unit)))
       (wait-tweet-scheduler (map register-tweet-scheduler configs)))))

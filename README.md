@@ -7,15 +7,14 @@
 ## example
 
 ```
-$ lein uberjar
-$ export app_consumer_keyN=FIXME
-$ export app_consumer_secretN=FIXME
-$ export user_access_tokenN=FIXME
-$ export user_access_token_secretN=FIXME
-$ export quotes_urlN=FIXME
-$ export master_twitter_idN=FIXME
-$ export tweet_interval_minN=1
-$ java -jar target/tbot-800-standalone.jar
+$ export app_consumer_key_0=FIXME
+$ export app_consumer_secret_0=FIXME
+$ export user_access_token_0=FIXME
+$ export user_access_token_secret_0=FIXME
+$ export quotes_url_0=FIXME
+$ export master_twitter_id_0=FIXME
+$ export tweet_interval_min_0=1
+$ lein trampoline run
 ```
 
 * N = [0, 9]
